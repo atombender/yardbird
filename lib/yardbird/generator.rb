@@ -27,7 +27,7 @@ module Yardbird
         categories = grouped_by_category.keys.uniq.sort_by { |s| s.downcase }
         categories.each do |category|
           writer.bullet "[#{category}](##{category_anchor_name(category)})"
-          writer.indent do
+          writer.indent(2) do
             eps = grouped_by_category[category]
             eps.each do |ep|
               writer.bullet "[`#{ep.method} #{ep.path}`](##{endpoint_anchor_name(ep)})"

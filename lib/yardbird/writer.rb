@@ -16,6 +16,7 @@ module Yardbird
         @stream.write("\n")
         @need_blank = false
       end
+      @stream.write(' ' * @indent_level)
       @stream.write(args.join)
       @stream.write("\n")
     end
@@ -43,11 +44,11 @@ module Yardbird
     end
 
     def bullet(s)
-      line((' ' * (@indent_level * 2)) + "* #{s}")
+      line("* #{s}")
     end
 
     def code_block(&block)
-      indent(2) do
+      indent(4) do
         yield
       end
     end
