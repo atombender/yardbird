@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require 'mercenary'
+
+require_relative '../lib/yardbird'
+
+Mercenary.program(:yardbird) do |p|
+  p.version Yardbird::VERSION
+  p.description 'Yardbird extracts REST API comments as a Markdown document'
+  p.syntax "yardbird <subcommand> [options]"
+
+  p.command :generate do |c|
+    c.syntax "generate PATH"
+    c.description "Generates from PATH"
+    c.option :outfile, '-o TARGET', '--out TARGET', 'Write to TARGET. Defaults to standard output.'
+    c.option :section_level, '--start-section LEVEL', 'Begin sections at level LEVEL. Default is 0.', Integer
+
+    c.action do |args, options|
+      abort "Specify a path." if args.empty?
+      if (file = options[:outfile])
+        stream = File.open(file, 'w:utf-8')
+      else
+        stream = $stdout
+      end
+      generator = Yardbird::Generator.new
+      generator.section_level = options[:section_level]
+      generator.paths |= args
+      generator.generate(stream)
+    end
+  end
+end

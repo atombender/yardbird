@@ -1,0 +1,5 @@
+require_relative 'yardbird/version'
+require_relative 'yardbird/endpoint'
+require_relative 'yardbird/parser'
+require_relative 'yardbird/generator'
+require_relative 'yardbird/writer'
