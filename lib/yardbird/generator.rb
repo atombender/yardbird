@@ -10,19 +10,31 @@ module Yardbird
   class Generator
 
     attr_accessor :paths
-    attr_accessor :options
     attr_accessor :section_level
     attr_accessor :table_of_contents
     attr_accessor :title
+    attr_reader :yaml_headers
 
     def initialize(options = {})
       @paths = []
+      @yaml_headers = {}
     end
 
     def generate(stream)
       endpoints = Yarddown::Parser.parse(@paths)
 
       grouped_by_category = endpoints.group_by { |e| e.category }
+
+      if @yaml_headers.any?
+        stream.puts "---"
+        @yaml_headers.each do |k, v|
+          stream.puts "#{k}: #{v}"
+        end
+        if @title and not @yaml_headers['title']
+          stream.puts "title: #{@title}"
+        end
+        stream.puts "---"
+      end
 
       writer = Writer.new(stream, section_level: @section_level)
       writer.section @title do

@@ -16,6 +16,7 @@ Mercenary.program(:yardbird) do |p|
     c.option :section_level, '--start-section LEVEL', 'Begin sections at level LEVEL. Default is 0.', Integer
     c.option :toc, '--toc', 'Include table of contents.', TrueClass
     c.option :title, '--title TITLE', 'Set a title'
+    c.option :yaml, '--yaml KEY=VALUE[,KEY=VALUE...]', 'Add YAML headers (for use with Jekyll)', Array
     c.action do |args, options|
       abort "Specify a path." if args.empty?
       if (file = options[:outfile])
@@ -27,6 +28,11 @@ Mercenary.program(:yardbird) do |p|
       generator.title = options[:title]
       generator.section_level = options[:section_level]
       generator.table_of_contents = options[:toc]
+      [options[:yaml]].flatten.each do |s|
+        if s =~ /\A(.*)=(.*)\z/
+          generator.yaml_headers[$1] = $2
+        end
+      end
       generator.paths |= args
       generator.generate(stream)
     end
