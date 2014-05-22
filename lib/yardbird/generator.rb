@@ -54,33 +54,34 @@ module Yardbird
         end
 
         grouped_by_category.each do |category, eps|
-          writer.heading category, anchor: category_anchor_name(category)
-          eps.each do |ep|
-            writer.section "`#{ep.method} #{ep.path}`", anchor: endpoint_anchor_name(ep) do
-              writer.line ep.docstring
-              if ep.params.any?
-                writer.section "Parameters" do
-                  ep.params.each do |param|
-                    writer.line "`#{param[:name]}` (",
-                      [param[:types]].flatten.join(', '),
-                      param[:type] == 'required' ? ", **required**" : '',
-                      ")<br/>#{param[:doc]}"
-                    writer.blank
+          writer.section category, anchor: category_anchor_name(category) do
+            eps.each do |ep|
+              writer.section "`#{ep.method} #{ep.path}`", anchor: endpoint_anchor_name(ep) do
+                writer.line ep.docstring
+                if ep.params.any?
+                  writer.section "Parameters" do
+                    ep.params.each do |param|
+                      writer.line "`#{param[:name]}` (",
+                        [param[:types]].flatten.join(', '),
+                        param[:type] == 'required' ? ", **required**" : '',
+                        ")<br/>#{param[:doc]}"
+                      writer.blank
+                    end
                   end
                 end
-              end
-              if ep.status.present?
-                writer.section "Status Codes" do
-                  ep.status.each do |s|
-                    writer.line "**#{s[:code]}** — #{s[:doc]}"
-                    writer.blank
+                if ep.status.present?
+                  writer.section "Status Codes" do
+                    ep.status.each do |s|
+                      writer.line "**#{s[:code]}** — #{s[:doc]}"
+                      writer.blank
+                    end
                   end
                 end
-              end
-              if ep.example.present?
-                writer.section "Example" do
-                  writer.code_block do
-                    writer.line "#{ep.method} #{ep.example} HTTP/1.1"
+                if ep.example.present?
+                  writer.section "Example" do
+                    writer.code_block do
+                      writer.line "#{ep.method} #{ep.example} HTTP/1.1"
+                    end
                   end
                 end
               end
