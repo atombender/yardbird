@@ -14,7 +14,8 @@ Mercenary.program(:yardbird) do |p|
     c.description "Generates from PATH"
     c.option :outfile, '-o TARGET', '--out TARGET', 'Write to TARGET. Defaults to standard output.'
     c.option :section_level, '--start-section LEVEL', 'Begin sections at level LEVEL. Default is 0.', Integer
-
+    c.option :toc, '--toc', 'Include table of contents.', TrueClass
+    c.option :title, '--title TITLE', 'Set a title'
     c.action do |args, options|
       abort "Specify a path." if args.empty?
       if (file = options[:outfile])
@@ -23,7 +24,9 @@ Mercenary.program(:yardbird) do |p|
         stream = $stdout
       end
       generator = Yardbird::Generator.new
+      generator.title = options[:title]
       generator.section_level = options[:section_level]
+      generator.table_of_contents = options[:toc]
       generator.paths |= args
       generator.generate(stream)
     end

@@ -21,12 +21,15 @@ module Yardbird
       @stream.write("\n")
     end
 
-    def section(title = nil, &block)
-      heading(title) if title
-
-      @section_level += 1
-      yield
-      @section_level -= 1
+    def section(title, options = {}, &block)
+      if title
+        heading(title, options)
+        @section_level += 1
+        yield
+        @section_level -= 1
+      else
+        yield
+      end
     end
 
     def blank
